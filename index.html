@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero Proxy | Unblocked</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Zero Proxy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            /* --- ONYX BLACK THEME --- */
             --bg-color: #000000;
             --sidebar-color: #030303;
             --accent-color: #7209b7;
@@ -18,42 +19,38 @@
             --card-bg: #080808;
             --border-color: #1a1a1a;
             --input-bg: #0a0a0a;
-            --transition-speed: 0.3s;
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
-        }
-
-        /* --- SNOW (WHITE DOTS) --- */
-        #snow-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            overflow: hidden;
         }
 
+        /* --- SNOW EFFECT --- */
+        #snow-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; overflow: hidden;
+        }
         .snow-dot {
-            position: absolute;
-            top: -10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            user-select: none;
-            animation: fall linear infinite;
+            position: absolute; top: -10px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%; animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (DESKTOP) --- */
         .sidebar {
             width: 80px;
             background-color: var(--sidebar-color);
@@ -62,287 +59,120 @@
             align-items: center;
             padding-top: 30px;
             border-right: 1px solid var(--border-color);
-            transition: width var(--transition-speed);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100;
         }
-        .sidebar:hover { width: 240px; }
+        @media (min-width: 1024px) { .sidebar:hover { width: 240px; } }
 
         .logo {
             color: var(--accent-color);
             font-size: 1.5rem;
             margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
-        .logo span { margin-left: 15px; opacity: 0; transition: 0.2s; font-weight: bold; }
+        .logo span { margin-left: 15px; opacity: 0; transition: 0.2s; font-weight: bold; pointer-events: none; }
         .sidebar:hover .logo span { opacity: 1; }
 
         .nav-item {
-            width: 90%; 
-            height: 55px;
-            display: flex;
-            align-items: center;
-            padding-left: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--sub-text);
-            border-radius: 30px; 
-            margin-bottom: 5px;
+            width: 90%; height: 55px;
+            display: flex; align-items: center; padding-left: 15px;
+            cursor: pointer; transition: 0.3s;
+            color: var(--sub-text); border-radius: 15px; margin-bottom: 5px;
         }
-        .nav-item:hover, .nav-item.active {
-            color: var(--text-color);
-            background: rgba(255,255,255,0.05);
-        }
+        .nav-item.active { color: var(--text-color); background: rgba(114, 9, 183, 0.15); border: 1px solid var(--accent-color); }
         .nav-item i { width: 30px; font-size: 1.2rem; text-align: center; }
         .nav-text { margin-left: 15px; opacity: 0; white-space: nowrap; transition: 0.2s; }
         .sidebar:hover .nav-text { opacity: 1; }
 
-        /* --- MOBILE MODE CSS --- */
-        body.mobile-mode .sidebar {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 70px;
-            flex-direction: row; justify-content: space-around;
-            padding-top: 0; border-right: none; border-top: 1px solid var(--border-color);
-        }
-        body.mobile-mode .sidebar:hover { width: 100%; height: 70px; } 
-        body.mobile-mode .nav-item { width: auto; padding: 0 20px; justify-content: center; height: 100%; border-radius: 0; margin: 0; }
-        body.mobile-mode .nav-item.active { color: var(--accent-color); background: transparent; }
-        body.mobile-mode .nav-text, body.mobile-mode .logo { display: none; }
-        body.mobile-mode .main { padding-bottom: 70px; }
-
-        /* --- CONTENT --- */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        /* --- MOBILE MODE (iOS) --- */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed; bottom: 0; left: 0; width: 100%; 
+                height: calc(75px + var(--safe-bottom));
+                flex-direction: row; justify-content: space-around;
+                padding: 0 10px var(--safe-bottom) 10px; 
+                border-right: none; border-top: 1px solid var(--border-color);
+            }
+            .sidebar:hover { width: 100%; }
+            .nav-item { width: auto; height: 60px; padding: 0 15px; }
+            .nav-text, .logo { display: none; }
+            .main { margin-bottom: 80px; }
         }
 
+        /* --- MAIN CONTENT --- */
+        .main { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 2; }
+        
         .top-bar {
-            height: 70px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            padding: 0 40px;
-            justify-content: space-between;
-            background: var(--bg-color);
-            position: relative;
+            height: 70px; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; padding: 0 30px;
+            justify-content: space-between; background: var(--bg-color);
+            padding-top: env(safe-area-inset-top);
         }
 
-        .status-indicator {
-            font-size: 0.8rem;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-color);
-            animation: pulseAnim 1s infinite;
-        }
-        @keyframes pulseAnim { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .status-indicator { font-size: 0.8rem; color: var(--accent-color); display: flex; align-items: center; gap: 10px; }
+        .pulse { width: 8px; height: 8px; background: var(--accent-color); border-radius: 50%; box-shadow: 0 0 8px var(--accent-color); animation: pulseAnim 1.5s infinite; }
+        @keyframes pulseAnim { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .content-area {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .tab { display: none; animation: fadeUp 0.4s ease; }
+        .content-area { flex: 1; padding: 30px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .tab { display: none; animation: slideUp 0.4s ease forwards; }
         .tab.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- SEARCH UI --- */
-        .search-wrapper {
-            max-width: 800px;
-            margin: 5vh auto;
-            text-align: center;
-        }
-        
-        .dashboard-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            color: var(--sub-text);
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-        .dashboard-info span { display: flex; align-items: center; gap: 10px; }
-        .dashboard-info i { color: var(--accent-color); }
-
+        .search-wrapper { max-width: 600px; margin: 8vh auto; text-align: center; }
         .search-bar {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 50px; 
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            margin-top: 20px;
+            background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; height: 60px; display: flex;
+            align-items: center; padding: 0 20px; margin-top: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: 0.3s;
         }
-        .search-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 10px 40px rgba(114, 9, 183, 0.2); }
         .search-bar input {
-            background: transparent;
-            border: none;
-            color: white;
-            flex: 1;
-            height: 100%;
-            font-size: 1.1rem;
-            outline: none;
-            margin-left: 15px;
+            background: transparent; border: none; color: white;
+            flex: 1; height: 100%; font-size: 17px; outline: none; margin-left: 15px;
         }
-        .search-bar button {
-            background: transparent;
-            border: none;
-            color: var(--sub-text);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: 0.2s;
-        }
-        .search-bar button:hover { color: var(--accent-color); transform: scale(1.1); }
+        .search-bar button { background: transparent; border: none; color: var(--accent-color); cursor: pointer; font-size: 1.2rem; }
 
-        /* --- IFRAME CONTAINER --- */
-        .frame-container {
-            width: 100%;
-            height: calc(100vh - 150px);
-            background: #000;
-            border-radius: 24px;
-            overflow: hidden;
-            position: relative;
-            display: none; 
-            border: 1px solid var(--border-color);
-        }
-        iframe { width: 100%; height: 100%; border: none; }
-        
-        /* CSS Filter for Force Dark Mode */
-        .force-dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
-        .frame-controls {
-            position: absolute;
-            top: 15px; right: 15px;
-            display: flex; gap: 10px; z-index: 10;
-        }
-        .frame-btn {
-            color: white; border: none; padding: 8px 16px;
-            border-radius: 30px; 
-            cursor: pointer; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .btn-close { background: #b91c1c; }
-        .btn-blank { background: var(--accent-color); }
-        
-        /* --- GAMES GRID --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
+        /* --- GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
         .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            overflow: hidden;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-            height: 260px;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; overflow: hidden; aspect-ratio: 1/1;
+            position: relative; transition: 0.3s;
         }
-        .card:hover { transform: translateY(-8px); border-color: var(--accent-color); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
-        
-        .card-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Forces image to fill the card */
-            transition: 0.3s;
-            display: block;
-            opacity: 0.7;
-        }
-        .card:hover .card-img { opacity: 1; transform: scale(1.05); }
-        
+        .card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.3s; }
+        .card:active { transform: scale(0.95); border-color: var(--accent-color); }
         .card-title {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, #000 20%, transparent);
-            padding: 25px 10px 15px;
-            color: white;
-            font-weight: bold;
-            z-index: 2;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
+            position: absolute; bottom: 0; width: 100%;
+            background: linear-gradient(transparent, #000);
+            padding: 15px 5px 10px; text-align: center; font-size: 13px; font-weight: 600;
         }
 
-        /* --- SETTINGS --- */
-        .setting-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); padding: 25px;
-            border-radius: 20px; 
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px; max-width: 650px;
+        /* --- BROWSER VIEW --- */
+        #browser-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 1000; display: none; flex-direction: column;
         }
-        .toggle-btn {
-            background: #111; color: white;
-            border: 1px solid var(--border-color); padding: 10px 20px;
-            border-radius: 30px; 
-            cursor: pointer; margin-left: 10px; transition: 0.2s;
+        .frame-header {
+            height: 60px; background: #050505; display: flex;
+            align-items: center; padding: env(safe-area-inset-top) 20px 0 20px;
+            justify-content: space-between; border-bottom: 1px solid var(--border-color);
         }
-        .toggle-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
-        
+        iframe { flex: 1; width: 100%; border: none; background: #fff; }
+
         .action-btn {
-            background: var(--accent-color); color: white;
-            border: none; padding: 10px 20px; border-radius: 30px;
-            cursor: pointer; transition: 0.2s;
-        }
-        .action-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
-
-        /* UI DROPDOWNS */
-        .filter-select {
-            background: #111;
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 30px;
-            margin-right: 10px;
-            outline: none;
-            width: 220px;
-        }
-        .filter-status {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: var(--accent-color);
-            display: none;
-        }
-
-        .overlay-msg {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #555; text-align: center; pointer-events: none; display: none;
+            background: var(--accent-color); color: white; border: none;
+            padding: 10px 20px; border-radius: 12px; font-weight: 600;
         }
 
     </style>
 </head>
 <body>
 
-    <!-- SNOW CONTAINER -->
     <div id="snow-container"></div>
 
-    <!-- Sidebar -->
     <nav class="sidebar">
         <div class="logo">
-            <i class="fa-solid fa-server"></i>
+            <i class="fa-solid fa-shield-halved"></i>
             <span>Zero Proxy</span>
         </div>
         <div class="nav-item active" onclick="setTab('home')">
@@ -351,489 +181,201 @@
         </div>
         <div class="nav-item" onclick="setTab('games')">
             <i class="fa-solid fa-gamepad"></i>
-            <span class="nav-text">Games</span>
+            <span class="nav-text">Library</span>
         </div>
         <div class="nav-item" onclick="setTab('settings')">
             <i class="fa-solid fa-sliders"></i>
-            <span class="nav-text">Settings</span>
+            <span class="nav-text">System</span>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="main">
         <div class="top-bar">
             <div class="status-indicator">
                 <div class="pulse"></div>
-                <span id="process-monitor">System Idle</span>
+                <span id="monitor">System Ready</span>
             </div>
-            <div style="color: var(--sub-text); font-size: 0.9rem;">
-                Engine: <span style="color: var(--text-color);">Zero Browser</span>
+            <div style="color: var(--sub-text); font-size: 0.8rem;">
+                Engine: <span style="color: white;">Google iOS Cloud</span>
             </div>
         </div>
 
         <div class="content-area">
             
-            <!-- BROWSE TAB -->
+            <!-- HOME -->
             <div id="home" class="tab active">
-                <div class="search-wrapper" id="search-ui">
-                    <h1 style="margin-bottom: 10px;">Zero Proxy</h1>
-                    <p style="color: var(--sub-text); margin-bottom: 30px;">Secure Container Environment</p>
+                <div class="search-wrapper">
+                    <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -1px;">Zero</h1>
+                    <p style="color: var(--sub-text);">Encrypted Browser Node</p>
                     
-                    <div class="dashboard-info">
-                        <span id="time-display"><i class="fa-regular fa-clock"></i> --:-- --</span>
-                        <span id="battery-display"><i class="fa-solid fa-battery-half"></i> --%</span>
-                    </div>
-
                     <div class="search-bar">
-                        <i class="fa-brands fa-microsoft"></i>
-                        <input type="text" id="url-input" placeholder="Search Zero Browser or enter URL..." autocomplete="off">
-                        <button onclick="executeProxy()"><i class="fa-solid fa-arrow-right"></i></button>
+                        <i class="fa-brands fa-google" style="color: var(--sub-text);"></i>
+                        <input type="text" id="url-input" placeholder="Search Google or enter URL" autocomplete="off" spellcheck="false">
+                        <button onclick="launchProxy()"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
-                </div>
 
-                <div class="frame-container" id="browser-view">
-                    <div class="frame-controls">
-                        <button class="frame-btn btn-blank" onclick="openFrameInBlank()">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Tab
+                    <div style="margin-top: 25px;">
+                        <button class="action-btn" onclick="stealthLaunch()">
+                            <i class="fa-solid fa-mask"></i> Stealth Mode
                         </button>
-                        <button class="frame-btn btn-close" onclick="closeFrame()">
-                            <i class="fa-solid fa-xmark"></i> Close
-                        </button>
-                    </div>
-                    <iframe id="proxy-frame" src=""></iframe>
-                    <div class="overlay-msg" id="blocked-msg">
-                        <h3>Content Loaded</h3>
-                        <p>If white screen: External refusal.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- GAMES TAB -->
+            <!-- GAMES -->
             <div id="games" class="tab">
-                <h2 style="margin-bottom: 20px;">Local Library</h2>
+                <h2 style="margin-bottom: 20px;">Apps & Games</h2>
                 <div class="grid">
-                    
-                    <!-- HiAnime -->
-                    <div class="card" onclick="launchGame('https://hianime.to/')">
-                        <img src="https://cdn2.steamgriddb.com/grid/d4b0d38ac177563362dc85001c9e7b0d.jpg" alt="HiAnime" class="card-img">
+                    <div class="card" onclick="launchProxy('https://hianime.to')">
+                        <img src="https://cdn2.steamgriddb.com/grid/d4b0d38ac177563362dc85001c9e7b0d.jpg">
                         <div class="card-title">HiAnime</div>
                     </div>
-
-                    <!-- Eaglercraft -->
-                    <div class="card" onclick="launchGame('https://eaglercraft.com/play/?version=1.8.8-wasm')">
-                        <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a" alt="Eaglercraft" class="card-img">
-                        <div class="card-title">Eaglercraft (1.8)</div>
+                    <div class="card" onclick="launchProxy('https://eaglercraft.com/play/')">
+                        <img src="https://assets.nintendo.com/image/upload/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a">
+                        <div class="card-title">Eaglercraft</div>
                     </div>
-
-                    <!-- Hollow Knight -->
-                    <div class="card" onclick="launchGame('https://1games.io/hollow-knight')">
-                        <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000003208/4643fb058642335c523910f3a7910575f56372f612f7c0c9a497aaae978d3e51" alt="Hollow Knight" class="card-img">
-                        <div class="card-title">Hollow Knight</div>
+                    <div class="card" onclick="launchProxy('https://now.gg')">
+                        <img src="https://now.gg/favicon.ico" style="object-fit: contain; padding: 20px;">
+                        <div class="card-title">Now.gg</div>
                     </div>
-
-                    <!-- Dashmetry -->
-                    <div class="card" onclick="launchGame('https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png')">
-                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img">
-                        <div class="card-title">Dashmetry</div>
+                    <div class="card" onclick="launchProxy('https://discord.com')">
+                        <img src="https://assets-global.website-files.com/6257adef93867e3c84519eb1/625744adc7a7a37e6369970a_623405f63126f50004928b50_discord-logo-purple.png">
+                        <div class="card-title">Discord</div>
                     </div>
-
-                    <!-- Zombs Royale -->
-                    <div class="card" onclick="launchGame('https://zombsroyale.io')">
-                        <img src="https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none" alt="Zombs Royale" class="card-img">
-                        <div class="card-title">Zombs Royale</div>
-                    </div>
-
-                    <!-- Slither.io -->
-                    <div class="card" onclick="launchGame('https://slither.io')">
-                        <img src="https://slither.io/s/fbthumb5.jpg" alt="Slither.io" class="card-img">
-                        <div class="card-title">Slither.io</div>
-                    </div>
-
-                    <!-- Poly Track -->
-                    <div class="card" onclick="launchGame('https://www.kodub.com/apps/polytrack')">
-                        <img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" alt="Poly Track" class="card-img">
-                        <div class="card-title">Poly Track</div>
-                    </div>
-
-                    <!-- Storage Simulator -->
-                    <div class="card" onclick="launchGame('https://www.kodub.com/apps/storagesimulator')">
-                        <img src="https://www.kodub.com/apps/storagesimulator/image" alt="Storage Simulator" class="card-img">
-                        <div class="card-title">Storage Sim</div>
-                    </div>
-
-                    <!-- Undertale Clone -->
-                    <div class="card" onclick="launchGame('https://wyv-undertale.netlify.app/')">
-                        <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000009921/44bea8c565db26c0c470a6325a47c9ea031633945cb91e4b5e1b1a39b01a2cdb" alt="Undertale Clone" class="card-img">
-                        <div class="card-title">Undertale</div>
-                    </div>
-
-                    <!-- Among Us Clone -->
-                    <div class="card" onclick="launchGame('https://amongusplay.online/')">
-                        <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000036098/758ab0b61205081da2466386940752c70e0e5ea43bd39e8b9b13eaa455c69b7e" alt="Among Us" class="card-img">
-                        <div class="card-title">Among Us</div>
-                    </div>
-
-                    <!-- Tomb of the Mask -->
-                    <div class="card" onclick="launchGame('https://tombofthe-mask.com/')">
-                        <img src="https://play-lh.googleusercontent.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO" alt="Tomb of the Mask" class="card-img">
-                        <div class="card-title">Tomb of the Mask</div>
-                    </div>
-
                 </div>
             </div>
 
-            <!-- SETTINGS TAB -->
+            <!-- SETTINGS -->
             <div id="settings" class="tab">
-                <h2 style="margin-bottom: 20px;">Configuration</h2>
-
-                <!-- Tab Cloaker -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Tab Cloaker</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Disguise this tab as another site.</p>
-                    </div>
-                    <div>
-                        <select id="cloak-select" class="filter-select" onchange="applyTabCloak(this.value)">
-                            <option value="none">Default (Zero Proxy)</option>
-                            <option value="canvas">Canvas</option>
-                            <option value="onelogin">OneLogin</option>
-                            <option value="xtramath">XtraMath</option>
-                            <option value="dreambox">Dreambox</option>
-                            <option value="khan">Khan Academy</option>
-                            <option value="classroom">Google Classroom</option>
-                            <option value="drive">Google Drive</option>
-                        </select>
-                    </div>
+                <h2 style="margin-bottom: 20px;">System Configuration</h2>
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border-color);">
+                    <p style="margin-bottom: 15px;">Security Presets</p>
+                    <button class="action-btn" style="width: 100%; margin-bottom: 10px; background: #b91c1c;" onclick="location.href='https://google.com'">
+                        <i class="fa-solid fa-skull"></i> Emergency Panic (Redirect)
+                    </button>
+                    <button class="action-btn" style="width: 100%;" onclick="alert('Session Encrypted')">
+                        <i class="fa-solid fa-lock"></i> Force Clear Cookies
+                    </button>
                 </div>
-
-                <!-- Secure Proxy Toggle -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Process All Sites (HTML Blob)</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">ON: Blobs all sites (Cloaked). OFF: Blobs only Bing.</p>
-                    </div>
-                    <div>
-                        <button class="toggle-btn active" id="btn-process-on" onclick="toggleSiteProcess(true)">ON</button>
-                        <button class="toggle-btn" id="btn-process-off" onclick="toggleSiteProcess(false)">OFF</button>
-                    </div>
-                </div>
-
-                <!-- Disable Cookies Toggle -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Disable Cookies</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Prevents data persistence to hide tracking.</p>
-                    </div>
-                    <div>
-                        <button class="toggle-btn active" id="btn-cookie-on" onclick="toggleCookies(true)">ON</button>
-                        <button class="toggle-btn" id="btn-cookie-off" onclick="toggleCookies(false)">OFF</button>
-                    </div>
-                </div>
-
-                <!-- Extension Optimizer -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Filter Disabler / Optimizer</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Specific masking for your school filter.</p>
-                        <div id="opt-status" class="filter-status"><i class="fa-solid fa-shield-halved"></i> Optimization Active: <span id="opt-name">None</span></div>
-                    </div>
-                    <div>
-                        <select id="filter-select" class="filter-select">
-                            <option value="none">Select Extension...</option>
-                            <option value="goguardian">GoGuardian</option>
-                            <option value="securly">Securly</option>
-                            <option value="lightspeed">Lightspeed</option>
-                            <option value="iboss">iBoss</option>
-                        </select>
-                        <button class="action-btn" onclick="optimizeFilter()">Optimize</button>
-                    </div>
-                </div>
-
-                <!-- About Blank CLOAKING -->
-                <div class="setting-row">
-                    <div>
-                        <h3>About:Blank Cloak</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Open entire site in hidden tab</p>
-                    </div>
-                    <div>
-                        <button class="action-btn" onclick="openSiteInBlank()">Launch Cloaked</button>
-                    </div>
-                </div>
-                
-                <!-- Anti-Filter Mode -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Anti-Filter Mode</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Disable Extension Blocking</p>
-                    </div>
-                    <div>
-                        <button class="toggle-btn active" id="btn-anti-on" onclick="toggleAntiFilter(true)">ON</button>
-                        <button class="toggle-btn" id="btn-anti-off" onclick="toggleAntiFilter(false)">OFF</button>
-                    </div>
-                </div>
-
             </div>
 
         </div>
+    </div>
+
+    <!-- BROWSER OVERLAY -->
+    <div id="browser-view">
+        <div class="frame-header">
+            <button onclick="closeBrowser()" style="background: transparent; border: none; color: white; font-size: 1.2rem;">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div style="font-size: 0.8rem; font-weight: 600;">ENCRYPTED SESSION</div>
+            <button onclick="toggleFullscreen()" style="background: transparent; border: none; color: white; font-size: 1.2rem;">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+        <iframe id="proxy-frame" allowfullscreen="true"></iframe>
     </div>
 
     <script>
         // --- SNOW LOGIC ---
         function initSnow() {
             const container = document.getElementById('snow-container');
-            const maxSnow = 50;
             setInterval(() => {
-                if(container.childElementCount > maxSnow) return;
+                if(container.childElementCount > 40) return;
                 const flake = document.createElement('div');
                 flake.className = 'snow-dot';
                 const size = Math.random() * 4 + 2 + 'px'; 
-                flake.style.width = size;
-                flake.style.height = size;
+                flake.style.width = size; flake.style.height = size;
                 flake.style.left = Math.random() * 100 + 'vw';
                 flake.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
-                flake.style.opacity = Math.random() * 0.7 + 0.3; 
                 container.appendChild(flake);
                 setTimeout(() => { flake.remove(); }, 7000);
-            }, 150);
+            }, 200);
         }
         initSnow();
 
-        // --- TAB CLOAK LOGIC ---
-        const cloaks = {
-            'canvas': { title: 'Dashboard', icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico' },
-            'onelogin': { title: 'OneLogin Portal', icon: 'https://www.onelogin.com/assets/img/favicons/favicon.ico' },
-            'xtramath': { title: 'XtraMath', icon: 'https://xtramath.org/assets/icons/favicon.ico' },
-            'dreambox': { title: 'DreamBox Learning', icon: 'https://www.dreambox.com/favicon.ico' },
-            'khan': { title: 'Khan Academy', icon: 'https://www.khanacademy.org/favicon.ico' },
-            'classroom': { title: 'Classes', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
-            'drive': { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png' },
-            'none': { title: 'Zero Proxy | Unblocked', icon: '' } 
-        };
-
-        function applyTabCloak(val) {
-            const preset = cloaks[val];
-            if(preset) {
-                document.title = preset.title;
-                let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                link.type = 'image/x-icon';
-                link.rel = 'shortcut icon';
-                link.href = preset.icon;
-                document.getElementsByTagName('head')[0].appendChild(link);
-            }
-        }
-
-        // --- CONFIGURATION ---
-        let currentUrlStore = ''; 
-        let processAllSites = true; 
-        let disableCookies = true;
-        let antiFilterMode = true;
-        let activeOptimizer = 'none';
-
-        // --- FILTER OPTIMIZER LOGIC ---
-        function optimizeFilter() {
-            const select = document.getElementById('filter-select');
-            activeOptimizer = select.value;
-            const statusDiv = document.getElementById('opt-status');
-            const nameSpan = document.getElementById('opt-name');
-            
-            if (activeOptimizer !== 'none') {
-                statusDiv.style.display = 'block';
-                nameSpan.innerText = activeOptimizer.charAt(0).toUpperCase() + activeOptimizer.slice(1);
-                const btn = document.querySelector('button[onclick="optimizeFilter()"]');
-                const originalText = btn.innerText;
-                btn.innerText = "Applied!";
-                btn.style.background = "#2cb67d";
-                setTimeout(() => { btn.innerText = originalText; btn.style.background = "var(--accent-color)"; }, 1500);
-            } else {
-                statusDiv.style.display = 'none';
-            }
-        }
-
-        // --- TIME & BATTERY LOGIC ---
-        function updateTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12; hours = hours ? hours : 12; 
-            document.getElementById('time-display').innerHTML = `<i class="fa-regular fa-clock"></i> ${hours}:${minutes} ${ampm}`;
-        }
-        setInterval(updateTime, 1000); updateTime();
-
-        if (navigator.getBattery) {
-            navigator.getBattery().then(function(battery) {
-                function updateBatteryUI() {
-                    const level = Math.round(battery.level * 100);
-                    let icon = 'fa-battery-full';
-                    if(level < 90) icon = 'fa-battery-three-quarters';
-                    if(level < 60) icon = 'fa-battery-half';
-                    if(level < 30) icon = 'fa-battery-quarter';
-                    if(level < 10) icon = 'fa-battery-empty';
-                    document.getElementById('battery-display').innerHTML = `<i class="fa-solid ${icon}"></i> ${level}%`;
-                }
-                updateBatteryUI();
-                battery.addEventListener('levelchange', updateBatteryUI);
-            });
-        } else { document.getElementById('battery-display').style.display = 'none'; }
-
-        // --- UI LOGIC ---
+        // --- NAVIGATION ---
         function setTab(id) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            const navItems = document.querySelectorAll('.nav-item');
-            if(id === 'home') navItems[0].classList.add('active');
-            if(id === 'games') navItems[1].classList.add('active');
-            if(id === 'settings') navItems[2].classList.add('active');
+            
+            const items = document.querySelectorAll('.nav-item');
+            if(id === 'home') items[0].classList.add('active');
+            if(id === 'games') items[1].classList.add('active');
+            if(id === 'settings') items[2].classList.add('active');
         }
 
-        function closeFrame() {
+        // --- BROWSER ENGINE ---
+        function launchProxy(manualUrl = null) {
+            const input = manualUrl || document.getElementById('url-input').value;
+            if(!input) return;
+
+            let target = '';
+            if (input.includes('.') && !input.includes(' ')) {
+                target = input.startsWith('http') ? input : 'https://' + input;
+            } else {
+                // Google search with iframe-friendly param
+                target = `https://www.google.com/search?q=${encodeURIComponent(input)}&igu=1`;
+            }
+
+            const frame = document.getElementById('proxy-frame');
+            const view = document.getElementById('browser-view');
+
+            // Blob Cloaking Logic
+            const blobHtml = `
+                <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>body,html{margin:0;padding:0;overflow:hidden;background:#fff;height:100vh;}</style>
+                    </head>
+                    <body>
+                        <iframe src="${target}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>
+                    </body>
+                </html>
+            `;
+            const blob = new Blob([blobHtml], { type: 'text/html' });
+            frame.src = URL.createObjectURL(blob);
+            view.style.display = 'flex';
+        }
+
+        function closeBrowser() {
             document.getElementById('browser-view').style.display = 'none';
-            document.getElementById('search-ui').style.display = 'block';
             document.getElementById('proxy-frame').src = '';
-            document.getElementById('proxy-frame').classList.remove('force-dark-mode');
-            currentUrlStore = '';
         }
 
-        function openSiteInBlank() {
-            const html = document.documentElement.outerHTML;
+        function stealthLaunch() {
             const win = window.open('about:blank', '_blank');
-            if(win) { win.document.write(html); win.document.close(); }
-        }
-
-        // --- SETTINGS TOGGLES ---
-        function toggleSiteProcess(status) {
-            processAllSites = status;
-            document.getElementById('btn-process-on').classList.toggle('active', status);
-            document.getElementById('btn-process-off').classList.toggle('active', !status);
-        }
-
-        function toggleCookies(status) {
-            disableCookies = status;
-            document.getElementById('btn-cookie-on').classList.toggle('active', status);
-            document.getElementById('btn-cookie-off').classList.toggle('active', !status);
-        }
-
-        function toggleAntiFilter(status) {
-            antiFilterMode = status;
-            document.getElementById('btn-anti-on').classList.toggle('active', status);
-            document.getElementById('btn-anti-off').classList.toggle('active', !status);
-        }
-
-        function openFrameInBlank() {
-            if (!currentUrlStore) return;
-            const win = window.open();
+            if(!win) return alert("Allow Popups!");
             win.document.body.style.margin = '0';
             win.document.body.style.height = '100vh';
             const iframe = win.document.createElement('iframe');
-            iframe.style.border = 'none'; iframe.style.width = '100%'; iframe.style.height = '100%';
-            iframe.src = currentUrlStore;
+            iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = 'none';
+            iframe.src = window.location.href;
             win.document.body.appendChild(iframe);
+            window.location.replace('https://classroom.google.com'); 
         }
 
-        // --- GAME LAUNCHERS ---
-        function launchGame(url) {
-            setTab('home');
-            document.getElementById('search-ui').style.display = 'none';
-            document.getElementById('browser-view').style.display = 'block';
-            document.getElementById('blocked-msg').style.display = 'none';
-            document.getElementById('proxy-frame').src = url;
-            currentUrlStore = url;
-        }
-
-        // --- BROWSER EXECUTOR ---
-        function executeProxy() {
-            const input = document.getElementById('url-input').value;
-            if(!input) return;
-
-            document.getElementById('search-ui').style.display = 'none';
-            document.getElementById('browser-view').style.display = 'block';
-            document.getElementById('blocked-msg').style.display = 'block';
-
-            let targetUrl = '';
-            let isBing = false;
-            
-            if (input.includes('.') && !input.includes(' ')) {
-                targetUrl = input.startsWith('http') ? input : 'https://' + input;
-            } else {
-                isBing = true;
-                targetUrl = `https://www.bing.com/search?q=${encodeURIComponent(input)}`;
-            }
-            
-            currentUrlStore = targetUrl;
+        function toggleFullscreen() {
             const frame = document.getElementById('proxy-frame');
-            
-            // Apply Dark Mode Filter ONLY for Bing
-            if(isBing) {
-                frame.classList.add('force-dark-mode');
-            } else {
-                frame.classList.remove('force-dark-mode');
-            }
-            
-            const shouldBlob = isBing || processAllSites;
-
-            if (shouldBlob) {
-                let fakeTitle = isBing ? "Zero Browser" : "Zero Proxy";
-                let fakeIcon = ""; 
-
-                if (activeOptimizer === 'goguardian' || activeOptimizer === 'securly' || activeOptimizer === 'lightspeed') {
-                    fakeTitle = "Google Drive";
-                    fakeIcon = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
-                }
-
-                // Removed allow-top-navigation to prevent redirects
-                let sandboxFlags = antiFilterMode 
-                    ? "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-modals" 
-                    : "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups";
-
-                const injectScript = `
-                    <script>
-                        setInterval(() => {
-                            if(document.title !== "${fakeTitle}") { document.title = "${fakeTitle}"; }
-                        }, 50);
-                        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                        link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = '${fakeIcon}';
-                        document.getElementsByTagName('head')[0].appendChild(link);
-                        
-                        ${disableCookies ? 'try { document.cookie = ""; window.localStorage.clear(); window.sessionStorage.clear(); } catch(e){}' : ''}
-                    <\/script>
-                `;
-
-                const htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>${fakeTitle}</title>
-                        <link rel="icon" href="${fakeIcon}">
-                        <style>body { margin: 0; overflow: hidden; background: #fff; }</style>
-                        ${activeOptimizer !== 'none' || disableCookies ? injectScript : ''}
-                    </head>
-                    <body>
-                        <iframe src="${targetUrl}" style="width:100vw; height:100vh; border:none;" sandbox="${sandboxFlags}"></iframe>
-                    </body>
-                    </html>
-                `;
-
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                frame.src = URL.createObjectURL(blob);
-            } else {
-                frame.src = targetUrl;
-            }
+            if (frame.requestFullscreen) frame.requestFullscreen();
+            else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
         }
-
-        setInterval(() => {
-            const monitor = document.getElementById('process-monitor');
-            const fakeHex = Math.floor(Math.random() * 16777215).toString(16);
-            if(document.getElementById('browser-view').style.display === 'block') {
-                 monitor.innerText = `Updating: Packet 0x${fakeHex}`;
-            } else {
-                monitor.innerText = "System Idle - 0.1s Tick Active";
-            }
-        }, 100);
 
         document.getElementById('url-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') executeProxy();
+            if (e.key === 'Enter') launchProxy();
         });
+
+        // iOS Scroll Fix
+        document.addEventListener('touchmove', function(e) {
+            if (document.getElementById('browser-view').style.display === 'flex') {
+                // allow
+            } else if (e.target.closest('.content-area')) {
+                // allow
+            } else {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
     </script>
 </body>
